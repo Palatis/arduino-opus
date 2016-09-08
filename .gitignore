@@ -2,3 +2,4 @@ include/
 share/
 lib/
 deps/
+build/
