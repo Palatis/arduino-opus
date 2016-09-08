@@ -24,7 +24,8 @@
 			"-I include",
 			"-I src",
 			"-L lib",
-			"-lopus"
+			"-lopus",
+			"-lopusfile"
 		]
 	}
 }
