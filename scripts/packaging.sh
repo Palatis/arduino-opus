@@ -11,4 +11,4 @@ tar c \
 	keywords.txt \
 	README.md \
 	LICENSE \
-| xz -9 -e > "build/esp8266-arduino-opus-$(git describe --always --long --tags).tar.xz"
+| xz -9 -e > "build/esp8266-arduino-opus-$(git describe --tags).tar.xz"
