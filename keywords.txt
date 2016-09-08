@@ -1,0 +1,105 @@
+#######################################
+# Syntax Coloring Map for esp8266-arduino-opus
+#######################################
+
+# TODO: multistream related stuff
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Palatis	KEYWORD1
+
+COpusEncoder  KEYWORD1
+COpusDecoder  KEYWORD1
+COpusRepacketizer KEYWORD1
+
+OpusEncoder KEYWORD1
+OpusDecoder	KEYWORD1
+OpusRepacketizer  KEYWORD1
+
+opus_int  KEYWORD1
+opus_int8  KEYWORD1
+opus_int16  KEYWORD1
+opus_int32  KEYWORD1
+opus_int64  KEYWORD1
+opus_uint  KEYWORD1
+opus_uint8  KEYWORD1
+opus_uint16  KEYWORD1
+opus_uint32  KEYWORD1
+opus_uint64  KEYWORD1
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+opus_encoder_get_size	KEYWORD2
+opus_encoder_create	KEYWORD2
+opus_encoder_init	KEYWORD2
+opus_encode	KEYWORD2
+opus_encode_float	KEYWORD2
+opus_encoder_destroy	KEYWORD2
+opus_encoder_ctl	KEYWORD2
+
+opus_decoder_create	KEYWORD2
+opus_decoder_init	KEYWORD2
+opus_decode	KEYWORD2
+opus_decode_float	KEYWORD2
+opus_decoder_ctl  KEYWORD2
+opus_decoder_destroy  KEYWORD2
+
+opus_packet_parse KEYWORD2
+opus_packet_get_bandwidth KEYWORD2
+opus_packet_get_samples_per_frame KEYWORD2
+opus_packet_get_nb_channels KEYWORD2
+opus_packet_get_nb_frames KEYWORD2
+opus_packet_get_nb_samples KEYWORD2
+opus_packet_pad KEYWORD2
+opus_packet_unpad KEYWORD2
+
+opus_pcm_soft_clip KEYWORD2
+
+opus_repacketizer_get_size KEYWORD2
+opus_repacketizer_init KEYWORD2
+opus_repacketizer_create KEYWORD2
+opus_repacketizer_destroy KEYWORD2
+opus_repacketizer_cat KEYWORD2
+opus_repacketizer_out_range KEYWORD2
+opus_repacketizer_get_nb_frames KEYWORD2
+opus_repacketizer_out KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+OPUS_OK LITERAL1
+OPUS_BAD_ARG LITERAL1
+OPUS_BUFFER_TOO_SMALL LITERAL1
+OPUS_INTERNAL_ERROR LITERAL1
+OPUS_INVALID_PACKET LITERAL1
+OPUS_UNIMPLEMENTED LITERAL1
+OPUS_INVALID_STATE LITERAL1
+OPUS_ALLOC_FAIL LITERAL1
+OPUS_AUTO LITERAL1
+OPUS_BITRATE_MAX LITERAL1
+OPUS_APPLICATION_VOIP LITERAL1
+OPUS_APPLICATION_AUDIO LITERAL1
+OPUS_APPLICATION_RESTRICTED_LOWDELAY LITERAL1
+OPUS_SIGNAL_VOICE LITERAL1
+OPUS_SIGNAL_MUSIC LITERAL1
+OPUS_BANDWIDTH_NARROWBAND LITERAL1
+OPUS_BANDWIDTH_MEDIUMBAND LITERAL1
+OPUS_BANDWIDTH_WIDEBAND LITERAL1
+OPUS_BANDWIDTH_SUPERWIDEBAND LITERAL1
+OPUS_BANDWIDTH_FULLBAND LITERAL1
+OPUS_FRAMESIZE_ARG LITERAL1
+OPUS_FRAMESIZE_2_5_MS LITERAL1
+OPUS_FRAMESIZE_5_MS LITERAL1
+OPUS_FRAMESIZE_10_MS LITERAL1
+OPUS_FRAMESIZE_20_MS LITERAL1
+OPUS_FRAMESIZE_40_MS LITERAL1
+OPUS_FRAMESIZE_60_MS LITERAL1
+
+# TODO: constants...
