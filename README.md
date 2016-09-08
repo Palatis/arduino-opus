@@ -9,6 +9,7 @@ I accept PR if someone figure out a better way to do that, anyway.
 For those people on [Mac OS X](https://www.apple.com/macos) or [Windows](https://www.microsoft.com/windows), just download the release binary FTM.
 
 for those who are brave enough to compile their own version:
+
 1. make sure you have the `xtensa-lx106-elf` toolchain in your `$PATH`
 2. run `script/prepare-xtensa.sh`
 3. done!
