@@ -12,9 +12,16 @@
 : ${OPUSFILE_GIT_CHECKOUT:="true"}
 : ${OPUSFILE_CONFIGURE_EXTRA:=""}
 
+: ${OGG_GIT_REPO:="https://github.com/Palatis/ogg.git"}
+: ${OGG_GIT_OPTIONS:=""}
+: ${OGG_GIT_REF:="master"}
+: ${OGG_GIT_CHECKOUT:="true"}
+: ${OGG_CONFIGURE_EXTRA:=""}
+
 LIBRARY_ROOT=$(dirname $(readlink -f "${0}"))/../
 OPUS_ROOT="${LIBRARY_ROOT}/deps/opus.git"
 OPUSFILE_ROOT="${LIBRARY_ROOT}/deps/opusfile.git"
+OGG_ROOT="${LIBRARY_ROOT}/deps/ogg.git"
 
 function die {
 	echo "*** ${1} ***"
@@ -41,6 +48,12 @@ function show_env {
 	echo "  OPUSFILE_GIT_REF        : ${OPUSFILE_GIT_REF}"
 	echo "  OPUSFILE_GIT_CHECKOUT   : ${OPUSFILE_GIT_CHECKOUT}"
 	echo "  OPUSFILE_CONFIGURE_EXTRA: ${OPUSFILE_CONFIGURE_EXTRA}"
+	echo "ogg:"
+	echo "  OGG_GIT_REPO            : ${OGG_GIT_REPO}"
+	echo "  OGG_GIT_OPTIONS         : ${OGG_GIT_OPTIONS}"
+	echo "  OGG_GIT_REF             : ${OGG_GIT_REF}"
+	echo "  OGG_GIT_CHECKOUT        : ${OGG_GIT_CHECKOUT}"
+	echo "  OGG_CONFIGURE_EXTRA     : ${OGG_CONFIGURE_EXTRA}"
 	echo "misc:"
 	echo "  LIBRARY_ROOT            : ${LIBRARY_ROOT}"
 	echo "  CHOST                   : ${CHOST}"
@@ -122,6 +135,25 @@ then
 	./autogen.sh
 fi
 
+# clone and checkout ogg from git
+if [ "${OGG_GIT_CHECKOUT}" == "true" ]
+then
+	if [ ! -d "${OGG_ROOT}" ]
+	then
+		git clone ${OGG_GIT_OPTIONS} "${OGG_GIT_REPO}" "${OGG_ROOT}" || \
+			die "git clone \"${OGG_GIT_REPO}\" into \"${OGG_ROOT}\" failed."
+	fi
+	cd "${OGG_ROOT}"
+	git pull || die "git pull failed"
+	git checkout ${OGG_GIT_REF} || die "git checkout ${OGG_GIT_REF} failed"
+fi
+
+if [ ! -x ${OGG_ROOT}/configure ]
+then
+	cd "${OGG_ROOT}"
+	./autogen.sh
+fi
+
 export CFLAGS
 export CXXFLAGS
 
@@ -145,13 +177,30 @@ ${OPUS_ROOT}/configure \
 make -j"$(nproc)" || die "making opus failed"
 make DESTDIR="${LIBRARY_ROOT}" install || die "installing opus failed"
 
+# build and install ogg
+mkdir -p "${OGG_ROOT}/build/${CHOST}"
+cd "${OGG_ROOT}/build/${CHOST}"
+${OGG_ROOT}/configure \
+	--host=${CHOST} \
+	--disable-doc \
+	--disable-shared \
+	--enable-static \
+	--disable-extra-programs \
+	--prefix=/ \
+	--with-gnu-ld \
+	--disable-maintainer-mode \
+	${OGG_CONFIGURE_EXTRA} \
+	|| die "ogg configure failed"
+
+make -j"$(nproc)" || die "making ogg failed"
+make DESTDIR="${LIBRARY_ROOT}" install || die "installing ogg failed"
+
 # build and install opusfile
 mkdir -p "${OPUSFILE_ROOT}/build/${CHOST}"
 cd "${OPUSFILE_ROOT}/build/${CHOST}"
 
 # opusfile needs CPPFLAGS to include <ogg/ogg.h>
-# it's only used for compiling and not linking, so we don't need any -L or -l.
-CPPFLAGS="-I/usr/include" \
+CPPFLAGS="-I${LIBRARY_ROOT}/include" \
 ${OPUSFILE_ROOT}/configure \
 	--host=${CHOST} \
 	--prefix=/ \

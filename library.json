@@ -15,17 +15,20 @@
 
 	"export": {
 		"include": [
-			"include/*"
+			"include/*",
+			"include/opus/*"
 		]
 	},
 
 	"build": {
 		"flags": [
+			"-I include/opus",
 			"-I include",
 			"-I src",
 			"-L lib",
 			"-lopus",
-			"-lopusfile"
+			"-lopusfile",
+			"-logg"
 		]
 	}
 }
