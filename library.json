@@ -2,6 +2,7 @@
 	"name": "arduino-opus",
 	"keywords": "audio, codec, opus, lossy",
 	"description": "The opus audio codec from XiPH.org",
+	"license": "Apache-2.0",
 	"authors":
 	{
 		"name": "Victor Tseng",
