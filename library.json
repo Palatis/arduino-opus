@@ -8,6 +8,10 @@
 		"email": "palatis@gmail.com",
 		"url": "https://github.com/Palatis/arduino-opus"
 	},
+	"repository": {
+	    "type": "git",
+	    "url": "https://github.com/Palatis/arduino-opus"
+	},
 	"version": "0.2",
 	"frameworks": "arduino",
 	"platforms": "*",
