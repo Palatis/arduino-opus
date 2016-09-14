@@ -1,219 +1,108 @@
 #!/bin/bash
 
-: ${OPUS_GIT_REPO:="https://github.com/xiph/opus.git"}
-: ${OPUS_GIT_OPTIONS:=""}
-: ${OPUS_GIT_REF:="master"}
-: ${OPUS_GIT_CHECKOUT:="true"}
-: ${OPUS_CONFIGURE_EXTRA:=""}
-
-: ${OPUSFILE_GIT_REPO:="https://github.com/xiph/opusfile.git"}
-: ${OPUSFILE_GIT_OPTIONS:=""}
-: ${OPUSFILE_GIT_REF:="master"}
-: ${OPUSFILE_GIT_CHECKOUT:="true"}
-: ${OPUSFILE_CONFIGURE_EXTRA:=""}
-
-: ${OGG_GIT_REPO:="https://github.com/Palatis/ogg.git"}
-: ${OGG_GIT_OPTIONS:=""}
-: ${OGG_GIT_REF:="master"}
-: ${OGG_GIT_CHECKOUT:="true"}
-: ${OGG_CONFIGURE_EXTRA:=""}
-
-LIBRARY_ROOT=$(dirname $(readlink -f "${0}"))/../
+LIBRARY_ROOT="$(dirname $(readlink -f "${0}"))/.."
 OPUS_ROOT="${LIBRARY_ROOT}/deps/opus.git"
 OPUSFILE_ROOT="${LIBRARY_ROOT}/deps/opusfile.git"
 OGG_ROOT="${LIBRARY_ROOT}/deps/ogg.git"
 
-function die {
-	echo "*** ${1} ***"
-	exit 1
-}
-
-function show_help {
-	echo "${0} --host <chost> [--cflags <flags>] [--cxxflags <flags>]"
-	echo "modify environment variables to tweak the behaviors."
-	echo
-	show_env
-}
-
 function show_env {
-	echo "opus:"
-	echo "  OPUS_GIT_REPO           : ${OPUS_GIT_REPO}"
-	echo "  OPUS_GIT_OPTIONS        : ${OPUS_GIT_OPTIONS}"
-	echo "  OPUS_GIT_REF            : ${OPUS_GIT_REF}"
-	echo "  OPUS_GIT_CHECKOUT       : ${OPUS_GIT_CHECKOUT}"
-	echo "  OPUS_CONFIGURE_EXTRA    : ${OPUS_CONFIGURE_EXTRA}"
-	echo "opusfile:"
-	echo "  OPUSFILE_GIT_REPO       : ${OPUSFILE_GIT_REPO}"
-	echo "  OPUSFILE_GIT_OPTIONS    : ${OPUSFILE_GIT_OPTIONS}"
-	echo "  OPUSFILE_GIT_REF        : ${OPUSFILE_GIT_REF}"
-	echo "  OPUSFILE_GIT_CHECKOUT   : ${OPUSFILE_GIT_CHECKOUT}"
-	echo "  OPUSFILE_CONFIGURE_EXTRA: ${OPUSFILE_CONFIGURE_EXTRA}"
-	echo "ogg:"
-	echo "  OGG_GIT_REPO            : ${OGG_GIT_REPO}"
-	echo "  OGG_GIT_OPTIONS         : ${OGG_GIT_OPTIONS}"
-	echo "  OGG_GIT_REF             : ${OGG_GIT_REF}"
-	echo "  OGG_GIT_CHECKOUT        : ${OGG_GIT_CHECKOUT}"
-	echo "  OGG_CONFIGURE_EXTRA     : ${OGG_CONFIGURE_EXTRA}"
-	echo "misc:"
-	echo "  LIBRARY_ROOT            : ${LIBRARY_ROOT}"
-	echo "  CHOST                   : ${CHOST}"
-	echo "  CFLAGS                  : ${CFLAGS}"
-	echo "  CXXFLAGS                : ${CXXFLAGS}"
+	echo "OGG          : ${OGG_ROOT}"
+	echo "OPUS         : ${OPUS_ROOT}"
+	echo "OPUSFILE     : ${OPUSFILE_ROOT}"
+	echo "LIBRARY_ROOT : ${LIBRARY_ROOT}"
 	echo
 }
-
-while [[ $# -gt 0 ]]
-do
-	case ${1} in
-	--host*|--chost*)
-		CHOST="${2}"
-		shift 2
-		;;
-	--cflags*)
-		CFLAGS="${2}"
-		shift 2
-		;;
-	--cxxflags*)
-		CXXFLAGS="${2}"
-		shift 2
-		;;
-	--help*)
-		show_help
-		exit 0
-		;;
-	*) # unknown option
-		shift
-		;;
-	esac
-done
 
 show_env
 
-if [ -e $CHOST ]
-then
-	show_help
-	exit 1
-fi
+# copy the source files to platformio layout
 
-mkdir -p "${LIBRARY_ROOT}/deps"
+# ogg
+from="${OGG_ROOT}/src"
+to="${LIBRARY_ROOT}/src"
+for I in `find "${from}" -type f -name "*.[ch]"`
+do
+	mkdir -p "$(dirname ${I/${from}/${to}})"
+	cp "${I}" "${I/${from}/${to}}"
+done
 
-# clone and checkout opus from git
-if [ "${OPUS_GIT_CHECKOUT}" == "true" ]
-then
-	if [ ! -d "${OPUS_ROOT}" ]
-	then
-		git clone ${OPUS_GIT_OPTIONS} "${OPUS_GIT_REPO}" "${OPUS_ROOT}" || \
-			die "git clone \"${OPUS_GIT_REPO}\" into \"${OPUS_ROOT}\" failed."
-	fi
-	cd "${OPUS_ROOT}"
-	git pull || die "git pull failed"
-	git checkout ${OPUS_GIT_REF} || die "git checkout ${OPUS_GIT_REF} failed"
-fi
+from="${OGG_ROOT}/include"
+to="${LIBRARY_ROOT}/src"
+for I in `find "${from}" -type f -name "*.[ch]"`
+do
+	mkdir -p "$(dirname ${I/${from}/${to}})"
+	cp "${I}" "${I/${from}/${to}}"
+done
 
-if [ ! -x ${OPUS_ROOT}/configure ]
-then
-	cd "${OPUS_ROOT}"
-	./autogen.sh
-fi
+# opusfile
+from="${OPUSFILE_ROOT}/src"
+to="${LIBRARY_ROOT}/src"
+for I in `find "${from}" -type f -name "*.[ch]"`
+do
+	mkdir -p "$(dirname ${I/${from}/${to}})"
+	cp "${I}" "${I/${from}/${to}}"
+done
 
-# clone and checkout opusfile from git
-if [ "${OPUSFILE_GIT_CHECKOUT}" == "true" ]
-then
-	if [ ! -d "${OPUSFILE_ROOT}" ]
-	then
-		git clone ${OPUSFILE_GIT_OPTIONS} "${OPUSFILE_GIT_REPO}" "${OPUSFILE_ROOT}" || \
-			die "git clone \"${OPUSFILE_GIT_REPO}\" into \"${OPUSFILE_ROOT}\" failed."
-	fi
-	cd "${OPUSFILE_ROOT}"
-	git pull || die "git pull failed"
-	git checkout ${OPUSFILE_GIT_REF} || die "git checkout ${OPUSFILE_GIT_REF} failed"
-fi
+from="${OPUSFILE_ROOT}/include"
+to="${LIBRARY_ROOT}/src"
+for I in `find "${from}" -type f -name "*.[ch]"`
+do
+	mkdir -p "$(dirname ${I/${from}/${to}})"
+	cp "${I}" "${I/${from}/${to}}"
+done
 
-if [ ! -x ${OPUSFILE_ROOT}/configure ]
-then
-	cd "${OPUSFILE_ROOT}"
-	./autogen.sh
-fi
+# opus
+from="${OPUS_ROOT}/celt"
+to="${LIBRARY_ROOT}/src/celt"
+for I in `find "${from}" -type f -name "*.[ch]"`
+do
+	mkdir -p "$(dirname ${I/${from}/${to}})"
+	cp "${I}" "${I/${from}/${to}}"
+done
 
-# clone and checkout ogg from git
-if [ "${OGG_GIT_CHECKOUT}" == "true" ]
-then
-	if [ ! -d "${OGG_ROOT}" ]
-	then
-		git clone ${OGG_GIT_OPTIONS} "${OGG_GIT_REPO}" "${OGG_ROOT}" || \
-			die "git clone \"${OGG_GIT_REPO}\" into \"${OGG_ROOT}\" failed."
-	fi
-	cd "${OGG_ROOT}"
-	git pull || die "git pull failed"
-	git checkout ${OGG_GIT_REF} || die "git checkout ${OGG_GIT_REF} failed"
-fi
+from="${OPUS_ROOT}/silk"
+to="${LIBRARY_ROOT}/src/silk"
+for I in `find "${from}" -type f -name "*.[ch]"`
+do
+	mkdir -p "$(dirname ${I/${from}/${to}})"
+	cp "${I}" "${I/${from}/${to}}"
+done
 
-if [ ! -x ${OGG_ROOT}/configure ]
-then
-	cd "${OGG_ROOT}"
-	./autogen.sh
-fi
+from="${OPUS_ROOT}/src"
+to="${LIBRARY_ROOT}/src"
+for I in `find "${from}" -type f -name "*.[ch]"`
+do
+	mkdir -p "$(dirname ${I/${from}/${to}})"
+	cp "${I}" "${I/${from}/${to}}"
+done
 
-export CFLAGS
-export CXXFLAGS
+from="${OPUS_ROOT}/include"
+to="${LIBRARY_ROOT}/src"
+for I in `find "${from}" -type f -name "*.[ch]"`
+do
+	mkdir -p "$(dirname ${I/${from}/${to}})"
+	cp "${I}" "${I/${from}/${to}}"
+done
 
-# build and install opus
-mkdir -p "${OPUS_ROOT}/build/${CHOST}"
-cd "${OPUS_ROOT}/build/${CHOST}"
-${OPUS_ROOT}/configure \
-	--host=${CHOST} \
-	--disable-doc \
-	--enable-fixed-point \
-	--disable-float-api \
-	--disable-shared \
-	--enable-static \
-	--disable-extra-programs \
-	--prefix=/ \
-	--with-gnu-ld \
-	--disable-maintainer-mode \
-	${OPUS_CONFIGURE_EXTRA} \
-	|| die "opus configure failed"
-
-make -j"$(nproc)" || die "making opus failed"
-make DESTDIR="${LIBRARY_ROOT}" install || die "installing opus failed"
-
-# build and install ogg
-mkdir -p "${OGG_ROOT}/build/${CHOST}"
-cd "${OGG_ROOT}/build/${CHOST}"
-${OGG_ROOT}/configure \
-	--host=${CHOST} \
-	--disable-doc \
-	--disable-shared \
-	--enable-static \
-	--disable-extra-programs \
-	--prefix=/ \
-	--with-gnu-ld \
-	--disable-maintainer-mode \
-	${OGG_CONFIGURE_EXTRA} \
-	|| die "ogg configure failed"
-
-make -j"$(nproc)" || die "making ogg failed"
-make DESTDIR="${LIBRARY_ROOT}" install || die "installing ogg failed"
-
-# build and install opusfile
-mkdir -p "${OPUSFILE_ROOT}/build/${CHOST}"
-cd "${OPUSFILE_ROOT}/build/${CHOST}"
-
-# opusfile needs CPPFLAGS to include <ogg/ogg.h>
-CPPFLAGS="-I${LIBRARY_ROOT}/include" \
-${OPUSFILE_ROOT}/configure \
-	--host=${CHOST} \
-	--prefix=/ \
-	--disable-largefile \
-	--disable-maintainer-mode \
-	--disable-http \
-	--enable-fixed-point \
-	--disable-float \
-	--disable-examples \
-	--disable-doc \
-	--with-gnu-ld \
-	${OPUS_CONFIGURE_EXTRA} \
-	|| die "opusfile configure failed"
-
-make -j"$(nproc)" || die "making opusfile failed"
-make DESTDIR="${LIBRARY_ROOT}" install || die "installing opusfile failed"
+# clean-up
+rm -rf \
+	"${LIBRARY_ROOT}/src/celt/arm" \
+	"${LIBRARY_ROOT}/src/celt/dump_modes" \
+	"${LIBRARY_ROOT}/src/celt/mips" \
+	"${LIBRARY_ROOT}/src/celt/tests" \
+	"${LIBRARY_ROOT}/src/celt/x86" \
+	"${LIBRARY_ROOT}/src/celt/opus_custom_demo.c" \
+	"${LIBRARY_ROOT}/src/silk/arm" \
+	"${LIBRARY_ROOT}/src/silk/mips" \
+	"${LIBRARY_ROOT}/src/silk/x86" \
+	"${LIBRARY_ROOT}/src/silk/fixed/mips" \
+	"${LIBRARY_ROOT}/src/silk/fixed/x86" \
+	"${LIBRARY_ROOT}/src/silk/float" \
+	"${LIBRARY_ROOT}/src/opus_compare.c" \
+	"${LIBRARY_ROOT}/src/opus_demo.c" \
+	"${LIBRARY_ROOT}/src/repacketizer_demo.c" \
+	"${LIBRARY_ROOT}/src/mlp_train.c" \
+	"${LIBRARY_ROOT}/src/mlp_train.h" \
+	"${LIBRARY_ROOT}/src/mlp_data.c" \
+	"${LIBRARY_ROOT}/src/wincerts.c" \
+	"${LIBRARY_ROOT}/src/winerrno.h"

@@ -1,34 +1,30 @@
 {
-	"name": "esp8266-opus",
+	"name": "arduino-opus",
 	"keywords": "audio, codec, opus, lossy",
-	"description": "The opus audio codec from XiPH.org, precompiled for esp8266-arduino.",
+	"description": "The opus audio codec from XiPH.org",
 	"authors":
 	{
 		"name": "Victor Tseng",
 		"email": "palatis@gmail.com",
-		"url": "https://github.com/Palatis/esp8266-arduino-opus"
+		"url": "https://github.com/Palatis/arduino-opus"
 	},
-	"version": "0.1",
-	"downloadUrl": "https://github.com/Palatis/esp8266-arduino-opus/releases/download/v0.1/esp8266-arduino-opus-v0.1.tar.xz",
+	"version": "0.2",
 	"frameworks": "arduino",
-	"platforms": [ "espressif8266" ],
-
-	"export": {
-		"include": [
-			"include/*",
-			"include/opus/*"
-		]
-	},
+	"platforms": "*",
 
 	"build": {
 		"flags": [
-			"-I include/opus",
-			"-I include",
-			"-I src",
-			"-L lib",
-			"-lopus",
-			"-lopusfile",
-			"-logg"
+			"-I src/celt",
+			"-I src/silk",
+			"-I src/silk/fixed",
+
+			"-DDISABLE_FLOAT_API",
+			"-DFIXED_POINT",
+			"-DVAR_ARRAYS",
+			"-DOPUS_BUILD",
+
+			"-DOP_DISABLE_FLOAT_API",
+			"-DOP_FIXED_POINT"
 		]
 	}
 }

@@ -1,0 +1,9 @@
+[submodule "deps/opus.git"]
+	path = deps/opus.git
+	url = https://github.com/xiph/opus.git
+[submodule "deps/opusfile.git"]
+	path = deps/opusfile.git
+	url = https://github.com/xiph/opusfile.git
+[submodule "deps/ogg.git"]
+	path = deps/ogg.git
+	url = https://github.com/xiph/ogg.git

@@ -1,5 +1,10 @@
 include/
 share/
 lib/
-deps/
 build/
+src/*.c
+src/*.h
+src/silk
+src/celt
+src/ogg/ogg.h
+src/ogg/os_types.h
