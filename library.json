@@ -23,13 +23,16 @@
 			"-I src/silk",
 			"-I src/silk/fixed",
 
+			"-DHAVE_STDINT_H",
+
 			"-DDISABLE_FLOAT_API",
 			"-DFIXED_POINT",
 			"-DVAR_ARRAYS",
 			"-DOPUS_BUILD",
 
 			"-DOP_DISABLE_FLOAT_API",
-			"-DOP_FIXED_POINT"
+			"-DOP_FIXED_POINT",
+			"-DOP_SMALL_FOOTPRINT"
 		]
 	}
 }
