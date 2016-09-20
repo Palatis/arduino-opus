@@ -33,15 +33,19 @@ public:
     }
 
     void open(const char * path) {
-        // FIXME: currently supports read only
         _file = SPIFFS.open(path, "r");
+
+        _spiffs_cb.read = reinterpret_cast<op_read_func>(_spiffs_read_func);
+        _spiffs_cb.seek = reinterpret_cast<op_seek_func>(_spiffs_seek_func);
+        _spiffs_cb.tell = reinterpret_cast<op_tell_func>(_spiffs_tell_func);
+        _spiffs_cb.close = reinterpret_cast<op_close_func>(_spiffs_close_func);
 
         int error = 0;
         _opusfile = op_open_callbacks(&_file, &_spiffs_cb, nullptr, 0, &error);
         if (error) {
-            Serial.printf("Opening %s failed with %d.\n", path, error);
-            _file.close();
+            op_free(_opusfile);
             _opusfile = nullptr;
+            _file.close();
         }
     }
 
@@ -68,26 +72,19 @@ public:
     ~OpusFileSPIFFS() {
         op_free(_opusfile);
         _opusfile = nullptr;
-    }
-
-    static void ICACHE_FLASH_ATTR init() {
-        _spiffs_cb.read = reinterpret_cast<op_read_func>(_spiffs_read_func);
-        _spiffs_cb.seek = reinterpret_cast<op_seek_func>(_spiffs_seek_func);
-        _spiffs_cb.tell = reinterpret_cast<op_tell_func>(_spiffs_tell_func);
-        _spiffs_cb.close = reinterpret_cast<op_close_func>(_spiffs_close_func);
+        _file.close();
     }
 
 private:
     fs::File _file;
     OggOpusFile * _opusfile;
+    OpusFileCallbacks _spiffs_cb;
 
-    static OpusFileCallbacks _spiffs_cb;
     static int _spiffs_read_func(fs::File * file, unsigned char * ptr, int nbytes);
     static int _spiffs_seek_func(fs::File * file, opus_int64 offset, int whence);
     static int _spiffs_tell_func(fs::File * file);
-    static int ICACHE_FLASH_ATTR _spiffs_close_func(fs::File * file);
+    static int _spiffs_close_func(fs::File * file);
 };
-
 
 }
 
